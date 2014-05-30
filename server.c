@@ -39,6 +39,7 @@ void *thread_func(void *sock)
 {
 	int asock = *((int*)sock);
 	char buffer[80];
+	// receive a message from a connected socket
 	int error = recv(asock, buffer, sizeof(buffer), 0);
 
 	// send file
@@ -57,12 +58,17 @@ void main (int argc, char *argv[])
 	pid_t child_pid;
 
 	// create listening socket
+	// domain: AF_INET(AF_UNIX)
+	// socket type: SOCK_STREAM(SOCK_DGRAM)
+	// protocol: 0(TCP for Stream; UDP for DGRAM)
 	listen_sd = socket(AF_INET, SOCK_STREAM, 0);
 	if (listen_sd < 0) {
 		perror("socket() failed");
 		exit(-1);
 	}
 
+	// set socket options
+	// protocol level: SOL_SOCKET
 	error = setsockopt(listen_sd, SOL_SOCKET,  SO_REUSEADDR,
 						(char *)&on, sizeof(on));
 
@@ -77,6 +83,7 @@ void main (int argc, char *argv[])
 	addr.sin_family = AF_INET;
 	addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	addr.sin_port  = htons(SERVER_PORT);
+	// bind a name to a socket
 	error = bind(listen_sd, (struct sockaddr *)&addr, sizeof(addr));
 
 	if (error < 0) {
@@ -85,6 +92,7 @@ void main (int argc, char *argv[])
 		exit(-1);
    }
 
+    //listen for socket connections and limit the queue of incoming connections
 	error = listen(listen_sd, QUEUE_SIZE);
 	if (error < 0) {
 		perror("listen() failed");
@@ -95,6 +103,7 @@ void main (int argc, char *argv[])
 	printf("The server is ready\n");
 
 	while (1) {
+		// accept a new connection on a socket
 		accept_sd = accept(listen_sd, NULL, NULL);
 		if (accept_sd < 0) {
 			perror("accept() failed");
