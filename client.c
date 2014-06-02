@@ -9,7 +9,7 @@
 #define SERVER_PORT 12345
 #define BUFFER_SIZE 80
 
-main (int argc, char *argv[])
+int main (int argc, char *argv[])
 {
 	int len, error;
 	int sockfd;
@@ -26,8 +26,7 @@ main (int argc, char *argv[])
 	// socket type: SOCK_STREAM(SOCK_DGRAM)
 	// protocol: 0(TCP for Stream; UDP for DGRAM)
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
-	if (sockfd < 0)
-	{
+	if (sockfd < 0) {
 		perror("socket");
 		exit(-1);
 	}
@@ -42,8 +41,7 @@ main (int argc, char *argv[])
 	error = connect(sockfd,
 					(struct sockaddr *)&addr,
 					sizeof(struct sockaddr_in));
-	if (error < 0)
-	{
+	if (error < 0) {
 		perror("connect");
 		close(sockfd);
 		exit(-1);
@@ -51,8 +49,7 @@ main (int argc, char *argv[])
 	
 	// send a message on a socket
 	len = send(sockfd, argv[2], strlen(argv[2]) + 1, 0);
-	if (len != strlen(argv[2]) + 1)
-	{
+	if (len != strlen(argv[2]) + 1)	{
 		perror("send");
 		close(sockfd);
 		exit(-1);
@@ -84,4 +81,5 @@ main (int argc, char *argv[])
 
 	fclose(file);
 	close(sockfd);
+	return 0;
 }

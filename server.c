@@ -47,7 +47,7 @@ void *thread_func(void *sock)
 	close(asock);
 }
 
-void main (int argc, char *argv[])
+int main (int argc, char *argv[])
 {
 	int error, on;
 	int listen_sd;
@@ -90,7 +90,7 @@ void main (int argc, char *argv[])
 		perror("bind() failed");
 		close(listen_sd);
 		exit(-1);
-   }
+   	}
 
     //listen for socket connections and limit the queue of incoming connections
 	error = listen(listen_sd, QUEUE_SIZE);
@@ -122,4 +122,5 @@ void main (int argc, char *argv[])
 		}
 	}
 	close(listen_sd);
+	return 0;
 }
